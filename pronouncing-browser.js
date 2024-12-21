@@ -1583,14 +1583,8 @@ function phonesForWord(find) {
 		var phones = item[1];
     
     if (word.length > 1) {
-      const notAllowed = ["'S", ".", ".'S", ".S", "-"];
-      for (const char of notAllowed) {
-        if (word.includes(char)) {
-          const cleanWord = word.replace('char', " ").trim()
-          if (cleanWord == find || find.includes(cleanWord)) {
-            matches.push(phones);
-          }
-        }
+      if (word == find || find.includes(word)) {
+        matches.push(phones);
       }
     }
 	});

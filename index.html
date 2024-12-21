@@ -89,6 +89,14 @@
         const input = document.getElementById("wordInput").value.toLowerCase();
         const resultDiv = document.getElementById("result");
 
+        containsSpecialChar = /[^a-zA-Z\s]/.test(input);
+
+        if (containsSpecialChar) {
+          resultDiv.textContent = "Please enter a proper word.";
+          resultDiv.className = "result fail";
+          return;
+        }
+
         const cleanedInput = input.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, "");
 
         if (
