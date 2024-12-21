@@ -111,25 +111,39 @@
 
         const words = cleanedInput.trim().split(" ");
 
+        let isWord = false;
         let hasBilabial = false;
+        let isSubstring = false;
 
         for (const word of words) {
-          const phonemes = pronouncing.phonesForWord(word);
-
-          for (const phoneme of phonemes) {
-            const phonemeParts = phoneme.split(" ");
-            if (phonemeParts.some((sound) => bilabialSounds.includes(sound))) {
+          const dictResult = pronouncing.phonesForWord(word);
+          const isFullWord = dictResult.some((res) => !res.substring);
+          if (dictResult.length > 0 && isFullWord) {
+            isWord = true;
+          }
+          for (const res of dictResult) {
+            const phonemeParts = res.phones.split(" ");
+            const isBilabial = phonemeParts.some((part) =>
+              bilabialSounds.includes(part)
+            );
+            if (isBilabial) {
               hasBilabial = true;
+            }
+            if (res.substring) {
+              isSubstring = true;
             }
           }
         }
 
-        if (hasBilabial) {
+        if (isWord && hasBilabial) {
           resultDiv.innerText = `"${cleanedInput.trim()}" can touch 💁‍♂️`;
-          resultDiv.className = "result success";
-        } else {
+          resultDiv.className = "success";
+        } else if (isWord && !hasBilabial) {
+          resultDiv.innerText = `"${cleanedInput.trim()}" cannot touch 🙅‍♂️`;
+          resultDiv.className = "fail";
+        } else if (isSubstring) {
           resultDiv.innerText = `"I am not sure for ${cleanedInput.trim()}, please check with Bosses"`;
-          resultDiv.className = "result fail";
+          resultDiv.className = "not-sure";
         }
       }
     </script>
