@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>can touch mou?</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+        background-color: #f4f4f9;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="text"] {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .result {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #555;
+      }
+
+      .result.success {
+        color: green;
+      }
+
+      .result.fail {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Black can touch, white cannot touch</h1>
+      <p>Enter a item to check</p>
+      <input type="text" id="wordInput" placeholder="Enter a item" />
+      <button id="checkButton" onclick="checkBilabialSounds()">Check</button>
+
+      <div id="result" class="result"></div>
+    </div>
+    <script src="./pronouncing-browser.js"></script>
+    <script>
+      document
+        .getElementById("wordInput")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            document.getElementById("checkButton").click();
+          }
+        });
+    </script>
+    <script>
+      const bilabialSounds = ["P", "B", "M"];
+
+      function checkBilabialSounds() {
+        const input = document.getElementById("wordInput").value.toLowerCase();
+        const resultDiv = document.getElementById("result");
+
+        const cleanedInput = input.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, "");
+
+        if (
+          !cleanedInput ||
+          cleanedInput.trim() === "" ||
+          cleanedInput.trim().length <= 1
+        ) {
+          resultDiv.textContent = "Please enter a proper word.";
+          resultDiv.className = "result fail";
+          return;
+        }
+
+        const words = cleanedInput.trim().split(" ");
+
+        let hasBilabial = false;
+
+        for (const word of words) {
+          const phonemes = pronouncing.phonesForWord(word);
+
+          for (const phoneme of phonemes) {
+            const phonemeParts = phoneme.split(" ");
+            if (phonemeParts.some((sound) => bilabialSounds.includes(sound))) {
+              hasBilabial = true;
+            }
+          }
+        }
+
+        if (hasBilabial) {
+          resultDiv.innerText = `"${cleanedInput.trim()}" can touch 💁‍♂️`;
+          resultDiv.className = "result success";
+        } else {
+          resultDiv.innerText = `"I am not sure for ${cleanedInput.trim()}, please check with Bosses"`;
+          resultDiv.className = "result fail";
+        }
+      }
+    </script>
+  </body>
+</html>
